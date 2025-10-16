@@ -21,6 +21,13 @@ public class FileManager {
         }
     }
 
-    public void saveTransaction(Transaction transaction)
+    public void saveTransaction(Transaction transaction){
+        try (PrintWriter writer = new PrintWriter((new FileWriter(TRANSACION_FILE, true)))){
+            writer.println(transaction.toCSV());
+        }
+        catch (IOException  e){
+            System.out.println("Transaction could not be saved to file: " + e.getMessage());
+        }
+    }
 
 }
