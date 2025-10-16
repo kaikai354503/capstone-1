@@ -248,7 +248,7 @@ public class Capstone1 {
                 displayPreviousYear(transactions);
                 break;
             case "5":
-                searchByVendor();
+                searchByVendor(transactions);
                 break;
             case "0":
                 return;
@@ -326,7 +326,26 @@ public class Capstone1 {
         }
     }
 
-    private static void searchByVendor() {
+    private static void searchByVendor(ArrayList<Transaction> transactions) {
+        System.out.println("\nEnter vendor name: ");
+        String vendor = scanner.nextLine().trim();
+        System.out.println("Vendor search results: " + vendor);
+        System.out.println("Date" + "Time" + "Description" + "Vendor" + "Amount" + "\n");
+
+
+
+        boolean found = false;
+
+        for (Transaction transaction : transactions){
+            if (transaction.getVendor().toLowerCase().contains(vendor.toLowerCase())){
+                System.out.println(transaction);
+                found = true;
+            }
+        }
+
+        if(!found){
+            System.out.println("Vendor not found: " + vendor);
+        }
     }
     //YearMonth.from()
 
