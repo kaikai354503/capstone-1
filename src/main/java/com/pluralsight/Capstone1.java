@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -238,18 +239,23 @@ public class Capstone1 {
                 displayMonthToDate(transactions);
                 break;
             case "2":
+                displayPreviousMonth(transactions);
                 break;
             case "3":
+                displayYearToDate(transactions);
                 break;
             case "4":
+                displayPreviousYear(transactions);
                 break;
             case "5":
+                searchByVendor();
                 break;
             case "0":
                 return;
 
         }
     }
+
     public static void displayMonthToDate (ArrayList<Transaction> transactions) {
         System.out.println("Date" + "Time" + "Description" + "Vendor" + "Amount" + "\n");
         System.out.println("\n-------------------------------------------");
@@ -267,6 +273,60 @@ public class Capstone1 {
 
 
 
+    }
+
+    public static void displayPreviousMonth(ArrayList<Transaction> transactions) {
+        System.out.println("Date" + "Time" + "Description" + "Vendor" + "Amount" + "\n");
+        System.out.println("\n-------------------------------------------");
+        LocalDate today = LocalDate.now();
+        YearMonth currentMonth = YearMonth.from(today);
+        YearMonth previousMonth = currentMonth.minusMonths(1);
+        for (Transaction transaction: transactions) {
+
+            LocalDate tranDate = LocalDate.parse(transaction.getDate());
+            if (YearMonth.from(tranDate).equals(previousMonth))
+            {
+                System.out.println(transaction);
+
+            }
+        }
+    }
+
+    public static void displayYearToDate(ArrayList<Transaction> transactions) {
+        System.out.println("Date" + "Time" + "Description" + "Vendor" + "Amount" + "\n");
+        System.out.println("\n-------------------------------------------");
+        LocalDate today = LocalDate.now();
+        Year currentYear = Year.from(today);
+        for (Transaction transaction: transactions) {
+
+            LocalDate tranDate = LocalDate.parse(transaction.getDate());
+            if (Year.from(tranDate).equals(currentYear))
+            {
+                System.out.println(transaction);
+
+            }
+        }
+    }
+
+    public static void displayPreviousYear(ArrayList<Transaction> transactions) {
+        System.out.println("Date" + "Time" + "Description" + "Vendor" + "Amount" + "\n");
+        System.out.println("\n-------------------------------------------");
+        LocalDate today = LocalDate.now();
+        Year currentYear = Year.from(today);
+
+        Year previousYear = currentYear.minusYears(1);
+        for (Transaction transaction: transactions) {
+
+            LocalDate tranDate = LocalDate.parse(transaction.getDate());
+            if (Year.from(tranDate).equals(previousYear))
+            {
+                System.out.println(transaction);
+
+            }
+        }
+    }
+
+    private static void searchByVendor() {
     }
     //YearMonth.from()
 
