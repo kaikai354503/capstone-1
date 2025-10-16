@@ -9,6 +9,32 @@ import java.util.Collections;
 public class FileManager {
     public static String TRANSACION_FILE = "src/main/resources/transactions.csv";
 
+    public void readTransaction(String TRANSACION_FILE) throws IOException{
+        try (BufferedReader reader = new BufferedReader(new FileReader(TRANSACION_FILE))){
+            String line = reader.readLine();
+
+            while (reader.readLine() != null){
+                System.out.println(line);
+            }
+
+
+        }
+
+    }
+
+    public void writeTransaction(String TRANSACION_FILE) throws IOException{
+        try (BufferedReader reader = new BufferedReader(new FileReader(TRANSACION_FILE))){
+            String line = reader.readLine();
+
+            while (reader.readLine() != null){
+                System.out.println(line);
+            }
+
+
+        }
+
+    }
+
     public void ensureTransactionFile() {
         File file = new File(TRANSACION_FILE);
         if (!file.exists()) {

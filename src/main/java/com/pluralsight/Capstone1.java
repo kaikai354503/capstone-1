@@ -3,7 +3,9 @@ package com.pluralsight;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -12,6 +14,7 @@ public class Capstone1 {
     static double total = 0;
 
     private static Scanner scanner = new Scanner(System.in);
+    private static ArrayList<Transaction> transactions = FileManager.loadTransactions();
 
     public static void main(String[] args) {
         homeScreen();
@@ -23,7 +26,7 @@ public class Capstone1 {
     //create home screen
 
     public static void homeScreen(){
-        //Loop to repeat promt and cycle switch
+        //Loop to repeat prompt and cycle switch
         while (true) {
 
             System.out.println("\n----Finance Tracker----\n");
@@ -45,11 +48,11 @@ public class Capstone1 {
                 case "L": displayLedger();
                     break;
                 case "X":
-                    System.out.println("Thank you for using my fanance tracker!");
+                    System.out.println("Thank you for using my fnance tracker!");
                     return;
 
                 default:
-                        System.out.println( "Invalid option. Try again.");
+                    System.out.println( "Invalid option. Try again.");
             }
         }
     }
@@ -150,10 +153,13 @@ public class Capstone1 {
                     displayAllEntries();
                     break;
                 case "D":
+                    displayDeposits(transactions);
                     break;
                 case "P":
+                    displayPayments(transactions);
                     break;
                 case "R":
+                    displayReports();
                     break;
                 case "H":
                     return;
@@ -167,20 +173,20 @@ public class Capstone1 {
 
         }
 
-        public static void displayAllEntries(){
+    public static void displayAllEntries(){
             System.out.println("All entries from newest to oldest.");
-            ArrayList<Transaction> transactions = FileManager.loadTransactions();
+           //ArrayList<Transaction> transactions = FileManager.loadTransactions();
             displayTransactionList(transactions);
         }
 
     public static void displayTransactionList(ArrayList<Transaction> transactions) {
-        if (transactions.isEmpty()){
+        if (transactions.isEmpty()) {
             System.out.println("No transactions");
             return;
         }
-        System.out.printf("Date","Time","Descriptoin","Vendor","Amount");
+        System.out.printf("Date", "Time", "Description", "Vendor", "Amount", "\n");
         System.out.println("-------------------------------------------");
-        for (Transaction transaction : transactions){
+        for (Transaction transaction : transactions) {
             System.out.println(transaction);
             total += transaction.getAmount();
         }
@@ -189,4 +195,81 @@ public class Capstone1 {
 
 
     }
+    public static void displayDeposits (ArrayList<Transaction> transactions) {
+        System.out.printf("Date", "Time", "Description", "Vendor", "Amount", "\n");
+        System.out.println("-------------------------------------------");
+        for (Transaction transaction: transactions) {
+            if (transaction.getAmount() > 0){
+                System.out.println(transaction);
+
+            }
+        }
+
+
+
+    }
+    public static void displayPayments (ArrayList<Transaction> transactions) {
+        System.out.printf("Date", "Time", "Description", "Vendor", "Amount", "\n");
+        System.out.println("-------------------------------------------");
+        for (Transaction transaction: transactions) {
+            if (transaction.getAmount() < 0){
+                System.out.println(transaction);
+
+            }
+        }
+
+
+
+    }
+
+    public static void displayReports (){
+        System.out.println("Display reports");
+        System.out.println("1) Month to date");
+        System.out.println("2) Previous month");
+        System.out.println("3) Year to date");
+        System.out.println("4) Previous year");
+        System.out.println("5) Search by vendor");
+        System.out.println("0) Go back to ledger");
+
+        String choice = scanner.nextLine().trim();
+
+        switch (choice){
+            case "1":
+                displayMonthToDate(transactions);
+                break;
+            case "2":
+                break;
+            case "3":
+                break;
+            case "4":
+                break;
+            case "5":
+                break;
+            case "0":
+                return;
+
+        }
+    }
+    public static void displayMonthToDate (ArrayList<Transaction> transactions) {
+        System.out.println("Date" + "Time" + "Description" + "Vendor" + "Amount" + "\n");
+        System.out.println("\n-------------------------------------------");
+        LocalDate today = LocalDate.now();
+        YearMonth currentMonth = YearMonth.from(today);
+        for (Transaction transaction: transactions) {
+
+            LocalDate tranDate = LocalDate.parse(transaction.getDate());
+            if (YearMonth.from(tranDate).equals(currentMonth))
+            {
+                System.out.println(transaction);
+
+            }
+        }
+
+
+
+    }
+    //YearMonth.from()
+
+
+
 }
