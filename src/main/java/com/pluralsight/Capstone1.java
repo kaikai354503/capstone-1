@@ -1,16 +1,36 @@
 //import files
 package com.pluralsight;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-public class Main {
+public class Capstone1 {
+
+
+    private static String CSV_FILE = "transactions.csv";
+
+    private static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+
     private static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
         homeScreen();
 
     }
 
+    private static void initializeFile(){
+        File file = new File(CSV_FILE);
+        if(!file.exists()){
+            try(PrintWriter )
+        }
+
+    }
+
     //create home screen
+
     private static void homeScreen(){
         //Loop to repeat promt and cycle switch
         while (true) {
@@ -38,16 +58,22 @@ public class Main {
                     return;
 
                 default:
-                    System.out.println("Invalid option. Try again.");
+                        System.out.println( "Invalid option. Try again.");
             }
         }
     }
-
-    //function to make deposits
     private static void makeDeposit(){
-        System.out.println("Make a Deposit");
+        System.out.println("----Make a Deposit----");
+        double amount = getAmountInput("Enter deposit amount");
+
+        Transacion transacion = new Transaction(amount, "Deposit");
+
+
+        //function to make deposits
+
     }
-    //function to make payments
+
+    //fn for making a payment
     private static void makePayment(){
         System.out.println("Make a payment");
     }
@@ -55,6 +81,9 @@ public class Main {
     private static void displayLedger(){
         System.out.println("Ledger");
 
+    }
+
+    public Capstone1() throws IOException {
     }
 
 
