@@ -3,16 +3,13 @@ package com.pluralsight;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Capstone1 {
-
-
-    private static String CSV_FILE = "transactions.csv";
-
-    private static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+    static double total = 0;
 
     private static Scanner scanner = new Scanner(System.in);
 
@@ -21,17 +18,11 @@ public class Capstone1 {
 
     }
 
-    private static void initializeFile(){
-        File file = new File(CSV_FILE);
-        if(!file.exists()){
-            try(PrintWriter )
-        }
 
-    }
 
     //create home screen
 
-    private static void homeScreen(){
+    public static void homeScreen(){
         //Loop to repeat promt and cycle switch
         while (true) {
 
@@ -62,29 +53,140 @@ public class Capstone1 {
             }
         }
     }
-    private static void makeDeposit(){
-        System.out.println("----Make a Deposit----");
-        double amount = getAmountInput("Enter deposit amount");
-
-        Transacion transacion = new Transaction(amount, "Deposit");
-
-
+    public static void makeDeposit(){
         //function to make deposits
+        FileManager fileManager = new FileManager();
 
+        System.out.println("----Make a Deposit----");
+        Transaction transaction = getTransactionDetails();
+        if(transaction!=null){
+            fileManager.saveTransaction(transaction);
+            System.out.println("Deposit sucessful");
+        }
     }
 
     //fn for making a payment
-    private static void makePayment(){
+    public static void makePayment(){
         System.out.println("Make a payment");
-    }
-    //function for ledger
-    private static void displayLedger(){
-        System.out.println("Ledger");
 
+        FileManager fileManager = new FileManager();
+        Transaction transaction = getTransactionDetails();
+        if(transaction != null){
+            Transaction payment = new Transaction(
+                 transaction.getDate(),
+                 transaction.getTime(),
+                 transaction.getDescription(),
+                 transaction.getVendor(),
+                 -Math.abs(transaction.getAmount())
+            );
+            fileManager.saveTransaction(payment);
+            System.out.println("Payment successful");
+        }
     }
 
+    public static Transaction getTransactionDetails(){
+
+        String date = getCurrentDate();
+        String time = getCurrentTime();
+
+        System.out.println("Enter description: ");
+        String description = scanner.nextLine().trim();
+        if (description.isEmpty()){
+            System.out.println("Description cannot be empty.");
+            return null;
+        }
+        System.out.println("Enter vendor: ");
+        String vendor = scanner.nextLine().trim();
+        if (vendor.isEmpty()){
+            System.out.println("Vendor cannot be empty.");
+            return null;
+        }
+        double amount = getValidatedAmount();
+        if(amount <= 0){
+            System.out.println("Ammount must be a positive value.");
+            return null;
+        }
+
+        return new Transaction(date,time,description,vendor,amount);
+    }
+
+    public static double getValidatedAmount(){
+        while (true){
+            System.out.println("Enter amount: ");
+            try{
+                return Double.parseDouble(scanner.nextLine().trim());
+            }
+            catch (NumberFormatException e){
+                System.out.println("Invalid input, please enter a number.");
+            }
+        }
+    }
     public Capstone1() throws IOException {
     }
 
+    public static String getCurrentDate(){
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
 
+    public static String getCurrentTime(){
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+    }
+
+    //function for ledger
+    public static void displayLedger(){
+        while (true){
+            System.out.println("Please make a selection");
+            System.out.println("\nLedger\n");
+            System.out.println("A) Display all entries");
+            System.out.println("D) Display deposits");
+            System.out.println("P) Display payments");
+            System.out.println("R) Run reports or custom search");
+            System.out.println("H) Home");
+
+            String choice = scanner.nextLine().trim().toUpperCase();
+
+            switch (choice){
+                case "A":
+                    displayAllEntries();
+                    break;
+                case "D":
+                    break;
+                case "P":
+                    break;
+                case "R":
+                    break;
+                case "H":
+                    return;
+                default:
+                    System.out.println("Invalid entry, please try again.");
+
+                }
+
+            }
+
+
+        }
+
+        public static void displayAllEntries(){
+            System.out.println("All entries from newest to oldest.");
+            ArrayList<Transaction> transactions = FileManager.loadTransactions();
+            displayTransactionList(transactions);
+        }
+
+    public static void displayTransactionList(ArrayList<Transaction> transactions) {
+        if (transactions.isEmpty()){
+            System.out.println("No transactions");
+            return;
+        }
+        System.out.printf("Date","Time","Descriptoin","Vendor","Amount");
+        System.out.println("-------------------------------------------");
+        for (Transaction transaction : transactions){
+            System.out.println(transaction);
+            total += transaction.getAmount();
+        }
+
+        System.out.println("total: " + total + "\n");
+
+
+    }
 }
