@@ -11,8 +11,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-    static double total = 0;
 
+    static double total = 0;
+    //Scanner for user inpu and an ArrayList to store loaded transactions.
     private static Scanner scanner = new Scanner(System.in);
     private static ArrayList<Transaction> transactions = FileManager.loadTransactions();
 
@@ -61,8 +62,10 @@ public class Main {
         FileManager fileManager = new FileManager();
 
         System.out.println("----Make a Deposit----");
+        //Gets transaction details and creates a transaction object
         Transaction transaction = getTransactionDetails();
         if(transaction!=null){
+            //saves amount to CSV file
             fileManager.saveTransaction(transaction);
             System.out.println("Deposit sucessful");
         }
@@ -73,25 +76,29 @@ public class Main {
         System.out.println("----Make a payment----");
 
         FileManager fileManager = new FileManager();
+        //gets transaction details from user
         Transaction transaction = getTransactionDetails();
         if(transaction != null){
+            //creates a negative transaction
             Transaction payment = new Transaction(
                  transaction.getDate(),
                  transaction.getTime(),
                  transaction.getDescription(),
                  transaction.getVendor(),
+                 //converts the positive input to negative
                  -Math.abs(transaction.getAmount())
             );
             fileManager.saveTransaction(payment);
             System.out.println("Payment successful");
         }
     }
-
+    //Method to collect transaction details
     public static Transaction getTransactionDetails(){
-
+        //gets current date and time
         String date = getCurrentDate();
         String time = getCurrentTime();
 
+        //makes sure description is not empty
         System.out.println("Enter description: ");
         String description = scanner.nextLine().trim();
         if (description.isEmpty()){
@@ -104,15 +111,16 @@ public class Main {
             System.out.println("Vendor cannot be empty.");
             return null;
         }
+        //validates that the amount is positive
         double amount = getValidatedAmount();
         if(amount <= 0){
             System.out.println("Ammount must be a positive value.");
             return null;
         }
-
+        //returns new transaction object
         return new Transaction(date,time,description,vendor,amount);
     }
-
+    // alows input for amount and checks if input is a valid number and type
     public static double getValidatedAmount(){
         while (true){
             System.out.println("Enter amount: ");
@@ -124,13 +132,13 @@ public class Main {
             }
         }
     }
-    public Main() throws IOException {
-    }
 
+    // gets current date and converts it to date format
     public static String getCurrentDate(){
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
+    //gets current time and converts format
     public static String getCurrentTime(){
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     }
@@ -179,8 +187,10 @@ public class Main {
             ArrayList<Transaction> transactions = FileManager.loadTransactions();
 
             displayTransactionList(transactions);
+            System.out.println("----------------------------------------------------------\n");
         }
 
+    //method to display any list of transactions in CSV format
     public static void displayTransactionList(ArrayList<Transaction> transactions) {
         if (transactions.isEmpty()) {
             System.out.println("No transactions");
@@ -188,6 +198,7 @@ public class Main {
         }
         System.out.println("----------------------------------------------------------");
         System.out.println("\nDate|Time|Description|Vendor|Amount\n");
+        //loops through each transaction
         for (Transaction transaction : transactions) {
             System.out.println(transaction.toCSV());
             total += transaction.getAmount();
@@ -197,16 +208,19 @@ public class Main {
 
 
     }
+
     public static void displayDeposits (ArrayList<Transaction> transactions) {
         System.out.println("----------------------------------------------------------");
         System.out.println("Date|Time|Description|Vendor|Amount\n");
 
         for (Transaction transaction: transactions) {
-            if (transaction.getAmount() > 0){
+            if (transaction.getAmount() > 0){ //filter to make sure input is positive
                 System.out.println(transaction.toCSV());
+
 
             }
         }
+        System.out.println("----------------------------------------------------------\n");
 
 
 
@@ -215,11 +229,12 @@ public class Main {
         System.out.println("----------------------------------------------------------");
         System.out.println("Date|Time|Description|Vendor|Amount\n");
         for (Transaction transaction: transactions) {
-            if (transaction.getAmount() < 0){
+            if (transaction.getAmount() < 0){// filter to make sure payment is negative
                 System.out.println(transaction.toCSV());
 
             }
         }
+        System.out.println("----------------------------------------------------------\n");
 
 
 
@@ -257,21 +272,25 @@ public class Main {
 
         }
     }
-
+    //filters and displays transactions for current month
     public static void displayMonthToDate (ArrayList<Transaction> transactions) {
         System.out.println("----------------------------------------------------------");
         System.out.println("Date|Time|Description|Vendor|Amount\n");
 
+        //get current date and extract YearMonth
         LocalDate today = LocalDate.now();
         YearMonth currentMonth = YearMonth.from(today);
+
         for (Transaction transaction: transactions) {
 
             LocalDate tranDate = LocalDate.parse(transaction.getDate());
+            //Parse transaction date and compare YearMonth with current month
             if (YearMonth.from(tranDate).equals(currentMonth))
             {
                 System.out.println(transaction.toCSV());
 
             }
+
         }
 
 
@@ -284,16 +303,19 @@ public class Main {
 
         LocalDate today = LocalDate.now();
         YearMonth currentMonth = YearMonth.from(today);
+        //calculate for previous month
         YearMonth previousMonth = currentMonth.minusMonths(1);
         for (Transaction transaction: transactions) {
 
             LocalDate tranDate = LocalDate.parse(transaction.getDate());
+            //filters previous month
             if (YearMonth.from(tranDate).equals(previousMonth))
             {
                 System.out.println(transaction.toCSV());
 
             }
         }
+
     }
 
     public static void displayYearToDate(ArrayList<Transaction> transactions) {
@@ -301,16 +323,17 @@ public class Main {
         System.out.println("Date|Time|Description|Vendor|Amount\n");
 
         LocalDate today = LocalDate.now();
-        Year currentYear = Year.from(today);
+        Year currentYear = Year.from(today);//extracts current year
         for (Transaction transaction: transactions) {
 
             LocalDate tranDate = LocalDate.parse(transaction.getDate());
-            if (Year.from(tranDate).equals(currentYear))
+            if (Year.from(tranDate).equals(currentYear))//filter for current year
             {
                 System.out.println(transaction.toCSV());
 
             }
         }
+
     }
 
     public static void displayPreviousYear(ArrayList<Transaction> transactions) {
@@ -330,8 +353,9 @@ public class Main {
 
             }
         }
-    }
 
+    }
+    //vendor search
     private static void searchByVendor(ArrayList<Transaction> transactions) {
         System.out.println("\nEnter vendor name: ");
         String vendor = scanner.nextLine().trim();
@@ -344,9 +368,10 @@ public class Main {
         boolean found = false;
 
         for (Transaction transaction : transactions){
+            //converts input and vendor to lowercase and checks for containment
             if (transaction.getVendor().toLowerCase().contains(vendor.toLowerCase())){
                 System.out.println(transaction.toCSV());
-                found = true;
+                found = true;//set flag true if match is found
             }
         }
 
