@@ -1,7 +1,6 @@
 //import files
 package com.pluralsight;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Capstone1 {
+public class Main {
     static double total = 0;
 
     private static Scanner scanner = new Scanner(System.in);
@@ -71,7 +70,7 @@ public class Capstone1 {
 
     //fn for making a payment
     public static void makePayment(){
-        System.out.println("Make a payment");
+        System.out.println("----Make a payment----");
 
         FileManager fileManager = new FileManager();
         Transaction transaction = getTransactionDetails();
@@ -125,7 +124,7 @@ public class Capstone1 {
             }
         }
     }
-    public Capstone1() throws IOException {
+    public Main() throws IOException {
     }
 
     public static String getCurrentDate(){
@@ -176,7 +175,9 @@ public class Capstone1 {
 
     public static void displayAllEntries(){
             System.out.println("All entries from newest to oldest.");
-           //ArrayList<Transaction> transactions = FileManager.loadTransactions();
+
+            ArrayList<Transaction> transactions = FileManager.loadTransactions();
+
             displayTransactionList(transactions);
         }
 
@@ -185,10 +186,10 @@ public class Capstone1 {
             System.out.println("No transactions");
             return;
         }
-        System.out.printf("Date", "Time", "Description", "Vendor", "Amount", "\n");
-        System.out.println("-------------------------------------------");
+        System.out.println("----------------------------------------------------------");
+        System.out.println("\nDate|Time|Description|Vendor|Amount\n");
         for (Transaction transaction : transactions) {
-            System.out.println(transaction);
+            System.out.println(transaction.toCSV());
             total += transaction.getAmount();
         }
 
@@ -197,11 +198,12 @@ public class Capstone1 {
 
     }
     public static void displayDeposits (ArrayList<Transaction> transactions) {
-        System.out.printf("Date", "Time", "Description", "Vendor", "Amount", "\n");
-        System.out.println("-------------------------------------------");
+        System.out.println("----------------------------------------------------------");
+        System.out.println("Date|Time|Description|Vendor|Amount\n");
+
         for (Transaction transaction: transactions) {
             if (transaction.getAmount() > 0){
-                System.out.println(transaction);
+                System.out.println(transaction.toCSV());
 
             }
         }
@@ -210,11 +212,11 @@ public class Capstone1 {
 
     }
     public static void displayPayments (ArrayList<Transaction> transactions) {
-        System.out.printf("Date", "Time", "Description", "Vendor", "Amount", "\n");
-        System.out.println("-------------------------------------------");
+        System.out.println("----------------------------------------------------------");
+        System.out.println("Date|Time|Description|Vendor|Amount\n");
         for (Transaction transaction: transactions) {
             if (transaction.getAmount() < 0){
-                System.out.println(transaction);
+                System.out.println(transaction.toCSV());
 
             }
         }
@@ -257,8 +259,9 @@ public class Capstone1 {
     }
 
     public static void displayMonthToDate (ArrayList<Transaction> transactions) {
-        System.out.println("Date" + "Time" + "Description" + "Vendor" + "Amount" + "\n");
-        System.out.println("\n-------------------------------------------");
+        System.out.println("----------------------------------------------------------");
+        System.out.println("Date|Time|Description|Vendor|Amount\n");
+
         LocalDate today = LocalDate.now();
         YearMonth currentMonth = YearMonth.from(today);
         for (Transaction transaction: transactions) {
@@ -266,7 +269,7 @@ public class Capstone1 {
             LocalDate tranDate = LocalDate.parse(transaction.getDate());
             if (YearMonth.from(tranDate).equals(currentMonth))
             {
-                System.out.println(transaction);
+                System.out.println(transaction.toCSV());
 
             }
         }
@@ -276,8 +279,9 @@ public class Capstone1 {
     }
 
     public static void displayPreviousMonth(ArrayList<Transaction> transactions) {
-        System.out.println("Date" + "Time" + "Description" + "Vendor" + "Amount" + "\n");
-        System.out.println("\n-------------------------------------------");
+        System.out.println("----------------------------------------------------------");
+        System.out.println("Date|Time|Description|Vendor|Amount\n");
+
         LocalDate today = LocalDate.now();
         YearMonth currentMonth = YearMonth.from(today);
         YearMonth previousMonth = currentMonth.minusMonths(1);
@@ -286,15 +290,16 @@ public class Capstone1 {
             LocalDate tranDate = LocalDate.parse(transaction.getDate());
             if (YearMonth.from(tranDate).equals(previousMonth))
             {
-                System.out.println(transaction);
+                System.out.println(transaction.toCSV());
 
             }
         }
     }
 
     public static void displayYearToDate(ArrayList<Transaction> transactions) {
-        System.out.println("Date" + "Time" + "Description" + "Vendor" + "Amount" + "\n");
-        System.out.println("\n-------------------------------------------");
+        System.out.println("----------------------------------------------------------");
+        System.out.println("Date|Time|Description|Vendor|Amount\n");
+
         LocalDate today = LocalDate.now();
         Year currentYear = Year.from(today);
         for (Transaction transaction: transactions) {
@@ -302,15 +307,16 @@ public class Capstone1 {
             LocalDate tranDate = LocalDate.parse(transaction.getDate());
             if (Year.from(tranDate).equals(currentYear))
             {
-                System.out.println(transaction);
+                System.out.println(transaction.toCSV());
 
             }
         }
     }
 
     public static void displayPreviousYear(ArrayList<Transaction> transactions) {
-        System.out.println("Date" + "Time" + "Description" + "Vendor" + "Amount" + "\n");
-        System.out.println("\n-------------------------------------------");
+        System.out.println("----------------------------------------------------------");
+        System.out.println("Date|Time|Description|Vendor|Amount\n");
+
         LocalDate today = LocalDate.now();
         Year currentYear = Year.from(today);
 
@@ -320,7 +326,7 @@ public class Capstone1 {
             LocalDate tranDate = LocalDate.parse(transaction.getDate());
             if (Year.from(tranDate).equals(previousYear))
             {
-                System.out.println(transaction);
+                System.out.println(transaction.toCSV());
 
             }
         }
@@ -329,8 +335,9 @@ public class Capstone1 {
     private static void searchByVendor(ArrayList<Transaction> transactions) {
         System.out.println("\nEnter vendor name: ");
         String vendor = scanner.nextLine().trim();
-        System.out.println("Vendor search results: " + vendor);
-        System.out.println("Date" + "Time" + "Description" + "Vendor" + "Amount" + "\n");
+        System.out.println("\nVendor search results: " + vendor);
+        System.out.println("----------------------------------------------------------\n");
+        System.out.println("Date|Time|Description|Vendor|Amount\n");
 
 
 
@@ -338,7 +345,7 @@ public class Capstone1 {
 
         for (Transaction transaction : transactions){
             if (transaction.getVendor().toLowerCase().contains(vendor.toLowerCase())){
-                System.out.println(transaction);
+                System.out.println(transaction.toCSV());
                 found = true;
             }
         }
