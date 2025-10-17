@@ -6,13 +6,13 @@ import java.util.Collections;
 
 public class FileManager {
     //assigns filepath to variable
-    public static String PURCHASE_HISTORY = "src/main/resources/transactions.csv";
+    public static String TRANSACION_FILE = "src/main/resources/transactions.csv";
 
 
     //saves transaction to CSV file
     public void saveTransaction(Transaction transaction) {
         //With resources to properly close writer
-        try (PrintWriter writer = new PrintWriter((new FileWriter(PURCHASE_HISTORY, true)))) {
+        try (PrintWriter writer = new PrintWriter((new FileWriter(TRANSACION_FILE, true)))) {
             writer.println(transaction.toCSV());
         }
         catch (IOException e) {
@@ -24,7 +24,7 @@ public class FileManager {
     public static ArrayList<Transaction> loadTransactions() {
         //creates empty list
         ArrayList<Transaction> transactions = new ArrayList<>();
-        File file = new File(PURCHASE_HISTORY);
+        File file = new File(TRANSACION_FILE);
 
         if (!file.exists()) {
             return transactions;
@@ -45,11 +45,11 @@ public class FileManager {
                 try {
                     //converts CSV line to Transaction object
                     transactions.add(Transaction.fromCSV(line));
-                } catch (Exception e) {
-                    System.out.println("Error parsing line: " + line);
+                }
+                catch (Exception e)
+                    {System.out.println("Error parsing line: " + line);}
                 }
             }
-        }
         }
         catch(IOException e) {
             System.out.println("Error reading transaction: " + e.getMessage());
